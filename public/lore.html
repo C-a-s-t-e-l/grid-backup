@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lore & Legends - Eerie Grid PH</title>
+    
+    <link rel="icon" href="https://cdn-icons-png.freepik.com/256/8494/8494367.png" type="image/png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="lore.css">
+    <link rel="stylesheet" href="chatbot.css">
+</head>
+<body class="lore-page-body">
+
+    <nav class="eerie-navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo-link">
+                <img src="https://cdn-icons-png.freepik.com/256/8494/8494367.png" alt="Eerie Grid PH Logo" class="nav-logo">
+                Eerie Grid  <span class="ph-highlight-nav">PH</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="map.html"><i class="fas fa-map-marked-alt"></i> The Grid</a></li>
+                 <li><a href="archive.html"><i class="fas fa-archive"></i> The Archive</a></li>
+                <li><a href="codex.html"><i class="fas fa-book-skull"></i> Creature Codex</a></li> 
+                <li><a href="lore.html" class="active"><i class="fas fa-book-tanakh"></i> Lore & Legends</a></li> 
+            </ul>
+        </div>
+    </nav>
+
+    <div class="lore-container">
+        <header class="page-header">
+            <h1>Lore & Legends</h1>
+            <p>The stories that haunt the archipelago. Read the case files, understand the warnings.</p>
+        </header>
+
+        <div id="article-list-container" class="article-list"></div>
+
+    </div>
+
+    <div id="lore-modal" class="modal">
+        <div class="modal-outer-frame"> 
+            <div class="modal-content">
+                <button id="lore-modal-close-button" class="modal-close" aria-label="Close lore details">
+                    <i class="fas fa-times"></i> 
+                </button>
+                
+                <img id="modal-lore-image" src="" alt="Lore Image" class="modal-codex-image-header">
+    
+                <div class="modal-body-scrollable"> 
+                    <div class="modal-header-creepy">
+                        <h2 id="modal-lore-title">Lore Title Here</h2>
+                    </div>
+                    <div class="modal-story-document"> 
+                        <div id="modal-lore-description" class="story-text-container"></div>
+                        
+                        <div class="codex-details-section">
+                            <h3><i class="fas fa-file-alt"></i> Operative Notes</h3>
+                            <ul id="modal-lore-notes"></ul>
+                        </div>
+                    </div>
+                </div>
+    
+                 <div class="modal-footer-creepy">
+                    <p><i class="fas fa-exclamation-triangle"></i> History repeats itself. Do not become a part of it.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="chat-widget" class="chat-widget-hidden">
+        <div id="chat-header">
+            <div id="keeper-info">
+                <img src="/horror-map/images/keeper_icon.png" alt="Archive Keeper Icon">
+                <span>Archive Keeper</span>
+            </div>
+            <button id="chat-close-button">×</button>
+        </div>
+        <div id="chat-messages">
+            <div class="chat-message ai-message">
+                <p>The archives are open. What knowledge do you seek from the shadows?</p>
+            </div>
+        </div>
+        <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Ask about a story or place...">
+            <button id="chat-send-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <button id="chat-toggle-button">
+        <img src="/horror-map/images/keeper_icon.png" alt="">
+    </button>
+
+    <footer class="map-page-footer">
+        <p>© <span id="currentYearLore"></span> Eerie Grid PH. The stories never die.</p>
+    </footer>
+         <script src="chatbot.js"></script>
+    <script>
+        const loreArticles = [
+            {
+                id: 'balete-drive',
+                title: 'The Haunting of Balete Drive',
+                excerpt: 'An investigation into the Philippines\' most infamous haunted street. The White Lady, vanishing drivers, and the dark energy of the Balete trees.',
+                imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/7975Balete_Drive_Quezon_City_Landmarks_01.jpg/2560px-7975Balete_Drive_Quezon_City_Landmarks_01.jpg',
+                fullContent: "Balete Drive in Quezon City is more than just a street; it's a nexus of paranormal activity, eternally linked to the apparition of a White Lady. For decades, taxi drivers and late-night commuters have reported seeing a lone, spectral woman flagging them down, only to vanish from the rearview mirror moments later. \n\nOperatives believe the ancient Balete trees lining the road act as conduits, anchoring spirits to this plane. The most prominent theory suggests the ghost is the spirit of a woman who met a violent end on the road, her soul now trapped in a perpetual loop of seeking a ride she will never complete.",
+                operativeNotes: [
+                    "Activity peaks between midnight and 3:00 AM.",
+                    "Apparition is often preceded by a sudden drop in temperature and electronic malfunctions.",
+                    "Avoid looking in the rearview mirror if a lone passenger is picked up in the area.",
+                    "The presence is considered a Class-3 Residual Haunting; generally non-violent but causes extreme psychological distress."
+                ]
+            },
+            {
+                id: 'manila-film-center',
+                title: 'Tragedy at the Film Center',
+                excerpt: 'The dark history of a structure where workers were allegedly buried alive in cement. Listen to the whispers of their souls.',
+                imageSrc: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbFeHKUmD9c8tjfuhSZIOuFeT9GPTRC5zaD4qjnl8ACFigl3Lyc8SBxEsewCorzAe8ArEGD2MO0Q1FWNT_Xa7qbH0huFhSbZK57nYs44gQThVNjBpolrJXpKcxaNHmYZIz-IWtwjfPXqQ/s1600/FILM+CENTER.jpg',
+                fullContent: "On November 17, 1981, during the frantic, round-the-clock construction of the Manila Film Center, a scaffolding collapse sent dozens of workers plunging into wet, quick-drying cement. In the rush to meet the deadline for an international film festival, official reports claim all workers were recovered. \n\nHowever, persistent accounts from former construction crew and first responders claim that recovery efforts were halted to save time, entombing an unknown number of victims within the structure itself. Today, the building is a hotbed of paranormal claims, from disembodied cries for help to phantom touches and full-bodied apparitions of men in work clothes, forever sealed within their concrete tomb.",
+                operativeNotes: [
+                    "Auditory phenomena (screams, whispers) are the most common reported events.",
+                    "Poltergeist activity has been noted in the main lobby and theater.",
+                    "The site is a powerful source of psychic energy, often causing nausea and dread in sensitives.",
+                    "Entry is restricted, but thermal scans from the exterior have shown inexplicable cold spots matching human forms."
+                ]
+            },
+            {
+                id: 'biringan-city',
+                title: 'Biringan: The Lost City',
+                excerpt: 'A complete dossier on the mythical city that appears and vanishes in Samar. A portal to another dimension or a kingdom of elementals?',
+                imageSrc: 'https://salindila.wordpress.com/wp-content/uploads/2017/02/16976529_10202729337752083_1945290617_n.jpg',
+                fullContent: "Biringan is not on any map. It is an ethereal city, said to exist in a different dimension that occasionally overlaps with our own in the island of Samar. Those who have claimed to see it describe a sprawling metropolis of impossible architecture, lit by an unseen source and populated by beautiful, yet uncanny, beings. \n\nFishermen report seeing the city's glittering lights from the sea, only for it to vanish upon approach. Others tell stories of being invited into Biringan, returning to our world days or weeks later with no memory of the passage of time. It is believed to be the capital city of the Engkanto, powerful elementals who sometimes abduct humans to be their partners or servants.",
+                operativeNotes: [
+                    "Biringan is a dimensional anomaly, not a physical location.",
+                    "Entry into Biringan is often unintentional and can lead to permanent displacement in time.",
+                    "Engkanto from Biringan are known to be deceptive; do not accept food or gifts from them.",
+                    "Satellite imagery of the purported region shows occasional, unexplained energy signatures."
+                ]
+            },
+            {
+                id: 'pagpag',
+                title: 'The "Pagpag" Belief',
+                excerpt: "Never go straight home from a wake. Understand the critical importance of 'pagpag' to avoid being followed by lingering spirits.",
+                imageSrc: 'https://w0.peakpx.com/wallpaper/957/832/HD-wallpaper-look-behind-you-poe-shadow-man-eerie-spirit-ghost-doorway-scary-halloween-following.jpg',
+                fullContent: "The tradition of 'pagpag' (to shake off dirt) is a deeply ingrained supernatural safety protocol. It is believed that malevolent spirits and even the ghost of the deceased may follow mourners home from a wake or funeral. These entities, drawn to the emotional energy of the living, can bring misfortune, sickness, or paranormal disturbances to a household. \n\nBy stopping at a neutral location first—like a convenience store or a coffee shop—it is thought that the spirit will be confused or its trail 'shaken off', preventing it from following you to your final destination. To neglect this protocol is to extend an open invitation for the supernatural to cross your threshold.",
+                operativeNotes: [
+                    "The protocol is most critical when attending the wake of a victim of a violent or sudden death.",
+                    "The neutral location must be a place of mundane activity, not another home.",
+                    "It is a ritual of misdirection, not an exorcism.",
+                    "Agents have correlated a statistically significant number of minor hauntings with the failure to observe this tradition."
+                ]
+            }, {
+                id: 'diplomat-hotel',
+                title: 'Case File: Diplomat Hotel',
+                excerpt: 'The ruins of this Baguio hotel echo with a dark past—a seminary, a refuge, a site of wartime atrocities. The spirits here have never checked out.',
+                imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/2/23/Diplomat_Hotel%2C_Baguio_City.jpg',
+                fullContent: "The Diplomat Hotel, perched atop Dominican Hill in Baguio, holds a history stained with blood. Originally a seminary and rest house, it became a refuge during World War II, only to witness the brutal massacre of its occupants by invading Japanese forces. Nuns and priests were reportedly beheaded within its walls.\n\nAfter being converted into a hotel, guests and staff reported countless paranormal encounters. Today, as a ruin, it is a playground for ghost hunters. Visitors report hearing cries from the second floor, seeing headless apparitions in priestly robes, and feeling an overwhelming sense of dread near the central fountain. It is considered one of the most actively haunted locations in the country.",
+                operativeNotes: [
+                    "Primary activity includes full-bodied apparitions and intelligent auditory phenomena.",
+                    "High EMF fluctuations are consistently recorded in the chapel and rooms on the second floor.",
+                    "The site is a convergence of residual and intelligent hauntings, making it highly unpredictable.",
+                    "Warning: Several operatives have reported being physically touched or pushed by an unseen force."
+                ]
+            },
+            {
+                id: 'sukob-curse',
+                title: 'The Curse of Sukob',
+                excerpt: 'Why is it forbidden for siblings to marry in the same year? A deep dive into the \'Sukob\' curse and the trail of misfortune it leaves behind.',
+                imageSrc: 'https://images.pexels.com/photos/169190/pexels-photo-169190.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                fullContent: "'Sukob' translates to 'head-to-head' and refers to a powerful folk belief that prohibits siblings from marrying within the same calendar year. To defy this is to invite a curse that splits the luck meant for one couple between two, effectively diluting it and attracting misfortune.\n\nThe curse is said to manifest as financial ruin, marital strife, severe illness, or even the death of one of the newlyweds or their close family members. Another form of 'sukob' applies to marrying in the same year that a close family member dies, as it is seen as a sign of disrespect to the dead, who may lash out and bring bad luck to the union.",
+                operativeNotes: [
+                    "This is a deeply embedded cultural curse, its power seemingly derived from collective belief.",
+                    "The curse appears to target the 'weaker' of the two couples in terms of fortune or health.",
+                    "There are no known countermeasures or rituals to break the curse once invoked.",
+                    "Operatives are advised to respect this belief when dealing with local communities to maintain trust."
+                ]
+            },
+            {
+                id: 'anting-anting-talisman',
+                title: 'The Power of Anting-Anting',
+                excerpt: 'An analysis of the Philippines\' sacred talismans. How are these amulets created, consecrated, and what powers do they hold against the forces of darkness?',
+                imageSrc: 'https://live.staticflickr.com/3702/12093786154_1d85d4300e_b.jpg',
+                fullContent: "Anting-anting are Filipino talismans, amulets, or charms imbued with supernatural power. They are not mere trinkets; they are sacred objects that require consecration rituals, often performed during Holy Week in sacred locations like mountains or caves. Their powers vary, ranging from protection against physical harm (bullets, knives) and evil spirits, to granting the wearer incredible strength or charisma.\n\nThe symbols inscribed are often a syncretic blend of Catholic prayers, Latin phrases (known as 'oraciones'), and pre-colonial animist imagery. The efficacy of an anting-anting is said to depend heavily on the wearer's faith and the purity of their intentions.",
+                operativeNotes: [
+                    "Authentic anting-anting are difficult to acquire and must be 'fed' with prayers to maintain their power.",
+                    "They are particularly effective against lower-class entities like Tiyanak and Duwende.",
+                    "Some talismans have specific prohibitions (e.g., cannot be brought into a tavern or house of ill repute).",
+                    "Several field agents carry consecrated medallions as standard-issue protective gear."
+                ]
+            },
+            {
+                id: 'siquijor-island',
+                title: 'Siquijor: The Mystic Island',
+                excerpt: 'Known as the \'Island of Fire,\' Siquijor is a cradle of Philippine mysticism. Explore the world of its healers, sorcerers, and ancient rituals.',
+                imageSrc: 'https://i.imgur.com/83pZUNF.jpeg',
+                fullContent: "Siquijor, the 'Isla del Fuego' (Island of Fire), earned its name from the swarms of fireflies that once lit its shores. Today, the name has a more mystical connotation. The island is the undisputed center of supernatural lore in the Philippines, home to powerful healers (mananambal) who cure ailments caused by spirits, and fearsome sorcerers (mambabarang) who can inflict them.\n\nDuring Holy Week, practitioners from all over the country gather here to 're-charge' their powers and brew potions from sacred herbs, roots, and insects. While the island has modernized, the undercurrent of ancient magic remains potent. Visitors are advised to be respectful, as one can never be sure who they are talking to.",
+                operativeNotes: [
+                    "A clear distinction exists between 'white magic' (healing) and 'black magic' (curses).",
+                    "Love potions, known as 'gayuma', are a local specialty but are highly unpredictable and dangerous.",
+                    "Do not accept food or drink from strangers if you suspect ill intent.",
+                    "The island's soil is considered potent; many practitioners take some with them to augment their rituals."
+                ]
+            },
+            {
+                id: 'clark-hospital-haunting',
+                title: 'The Ghosts of Clark Hospital',
+                excerpt: 'Once a major US military medical facility, the abandoned Clark Air Base Hospital is now a ward for the dead. The ghosts of soldiers still roam its decaying halls.',
+                imageSrc: 'https://live.staticflickr.com/4054/4333068940_fbbfe3b50c_b.jpg',
+                fullContent: "The Clark Air Base Hospital served as a primary medical facility for American soldiers during the Vietnam War and beyond. Thousands of soldiers took their last breaths within its walls, their trauma and pain seeping into the very foundation of the building. After the eruption of Mt. Pinatubo led to the base's abandonment, the spirits were left to fester.\n\nReports from ghost hunters and trespassers are consistent and terrifying. Violent poltergeist activity, disembodied screams in English, and apparitions of wounded soldiers are commonplace. The energy is described as heavy and aggressive, a stark contrast to the more folkloric hauntings in other parts of the country. This is a place of pure, unfiltered human trauma.",
+                operativeNotes: [
+                    "This location records some of the highest and most consistent EVP (Electronic Voice Phenomena) readings in Asia.",
+                    "The hauntings are classified as intelligent and, in some cases, hostile.",
+                    "The morgue and the psychiatric ward are considered the epicenters of activity.",
+                    "All operatives entering the vicinity must undergo psychological evaluation before and after the mission."
+                ]
+            },
+            {
+                id: 'protocol-tabi-tabi-po',
+                title: 'Protocol: Tabi-Tabi Po',
+                excerpt: 'More than just words, "tabi-tabi po" is the most crucial protocol when treading on unseen territory. Understand the concept of respect and the consequences of trespass.',
+                imageSrc: 'https://i.imgur.com/kSDFk6I.jpeg',
+                fullContent: "'Tabi-tabi po' (roughly, 'Excuse me, please move aside') is the most fundamental verbal protocol for interacting with the unseen world in the Philippines. It is a phrase of respect, uttered when passing by places believed to be inhabited by spirits—anthills (punso), ancient trees, empty lots, or dark forests.\n\nIt is an acknowledgement that humans do not own the land and are merely passing through the territory of elemental beings like duwende (dwarves), nuno (goblins), or engkanto (elementals). To disturb their homes without this simple courtesy is to invite retribution, which can range from getting lost and minor illnesses to debilitating sickness and even death. The act is not one of fear, but of diplomacy with a world that exists parallel to our own.",
+                operativeNotes: [
+                    "This protocol is primarily effective against territorial, non-malevolent entities.",
+                    "Sincerity is key; a mumbled or sarcastic utterance may be ignored or seen as a greater insult.",
+                    "If you accidentally kick an anthill or break a branch, an immediate and sincere apology using the protocol is advised.",
+                    "Failure to observe this protocol is the leading cause of low-level elemental afflictions reported to the Grid."
+                ]
+            }
+        ];
+
+        const articleContainer = document.getElementById('article-list-container');
+        const modal = document.getElementById('lore-modal');
+        const modalCloseBtn = document.getElementById('lore-modal-close-button');
+        const modalImage = document.getElementById('modal-lore-image');
+        const modalTitle = document.getElementById('modal-lore-title');
+        const modalDescription = document.getElementById('modal-lore-description');
+        const modalNotes = document.getElementById('modal-lore-notes');
+
+        function renderArticles() {
+            if (!articleContainer) return;
+            const articlesHTML = loreArticles.map(article => `
+                <div class="article-item" data-id="${article.id}" role="button" tabindex="0">
+                    <div class="article-text">
+                        <h3>${article.title}</h3>
+                        <p class="article-excerpt">${article.excerpt}</p>
+                    </div>
+                    <div class="article-arrow"><i class="fas fa-folder-open"></i></div>
+                </div>
+            `).join('');
+            articleContainer.innerHTML = articlesHTML;
+        }
+        
+        function populateModal(article) {
+            modalImage.src = article.imageSrc;
+            modalImage.alt = article.title;
+            modalTitle.textContent = article.title;
+            modalDescription.innerHTML = article.fullContent.split('\n\n').map(p => `<p>${p}</p>`).join('');
+            modalNotes.innerHTML = article.operativeNotes.map(item => `<li>${item}</li>`).join('');
+        }
+
+       function openModal() {
+            modal.classList.add('modal-visible'); 
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('modal-visible');
+            document.body.style.overflow = '';
+        }
+        
+        articleContainer.addEventListener('click', (e) => {
+            const articleElement = e.target.closest('.article-item');
+            if (!articleElement) return;
+
+            const articleId = articleElement.dataset.id;
+            const articleData = loreArticles.find(c => c.id === articleId);
+
+            if (articleData) {
+                populateModal(articleData);
+                openModal();
+            }
+        });
+
+        modalCloseBtn.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && modal.classList.contains('modal-visible')) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('currentYearLore').textContent = new Date().getFullYear();
+        const navToggle = document.querySelector('.nav-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', () => {
+                const isExpanded = navToggle.getAttribute('aria-expanded') === 'true' || false;
+                navToggle.setAttribute('aria-expanded', !isExpanded);
+                navMenu.classList.toggle('active');
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', renderArticles);
+    </script>
+</body>
+</html>

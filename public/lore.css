@@ -1,0 +1,277 @@
+.lore-page-body {
+    font-family: var(--font-body);
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png'),
+                      radial-gradient(ellipse at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.9) 100%);
+    background-attachment: fixed;
+    padding-top: 70px;
+}
+
+.lore-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.page-header h1 {
+    font-family: var(--font-creepy);
+    font-size: 3.5rem;
+    color: var(--accent-color);
+    text-shadow: 1px 1px 0 #000, 0 0 10px var(--accent-hover);
+}
+
+.page-header p {
+    font-family: var(--font-narrative);
+    font-size: 1.2rem;
+    color: var(--text-muted);
+}
+
+.article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    counter-reset: case-file-counter; 
+}
+
+.article-item {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    background-color: rgba(10,10,10,0.3);
+    border: 1px solid var(--border-color);
+    padding: 20px 25px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+.article-item:hover {
+    background-color: rgba(30,30,30,0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.article-item::before {
+    counter-increment: case-file-counter; 
+    content: "FILE " counter(case-file-counter, decimal-leading-zero); 
+    position: absolute;
+    top: 5px;
+    left: -2px;
+    font-family: 'Special Elite', monospace;
+    font-size: 0.7rem;
+    color: var(--accent-hover);
+    background-color: var(--accent-color);
+    padding: 2px 8px;
+    border-radius: 0 0 4px 0;
+    font-weight: bold;
+}
+
+.article-text {
+    flex-grow: 1;
+}
+
+.article-text h3 {
+    font-family: var(--font-narrative);
+    font-size: 1.5rem;
+    margin: 0 0 8px 0;
+    color: #f5f5f5;
+}
+
+.article-text .article-excerpt {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.article-arrow {
+    font-size: 2rem;
+    color: var(--text-muted);
+    transition: color 0.3s, transform 0.3s;
+}
+
+.article-item:hover .article-arrow {
+    color: var(--highlight-color);
+    transform: scale(1.1);
+}
+
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal.modal-visible {
+    padding-top: 70px;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal.modal-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.modal-outer-frame {
+    position: relative;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    /* background-color: #F5F1E9;
+    border: 10px solid #2a2a2a; */
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+}
+.modal-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #B92B27;
+    color: white;
+    border: 3px solid white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.modal-close:hover {
+    transform: scale(1.1);
+    background-color: #a52723;
+}
+.modal-codex-image-header {
+    width: 100%;
+    max-height: 250px;
+    object-fit: contain;
+    background-color: #1a1a1a;
+    flex-shrink: 0;
+    border-bottom: 2px dashed rgba(0,0,0,0.2);
+}
+.modal-body-scrollable {
+    flex-grow: 1;
+    overflow-y: auto;
+    min-height: 0;
+    /* padding: 20px 30px; */
+    color: #3D352E;
+}
+.modal-header-creepy h2 {
+    font-family: 'Special Elite', monospace;
+    font-size: 2.5rem;
+    text-align: center;
+    color: #333;
+    margin: 0 0 20px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding-bottom: 15px;
+}
+.story-text-container p {
+    font-family: 'Merriweather', serif;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 1rem; 
+}
+.story-text-container p:first-of-type::first-letter {
+    float: left;
+    font-size: 4rem;
+    line-height: 0.8;
+    padding: 4px 8px 0 0;
+    font-family: 'Special Elite', monospace;
+    color: #B92B27;
+}
+.codex-details-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px dashed rgba(0,0,0,0.2);
+}
+.codex-details-section h3 {
+    font-family: 'Special Elite', monospace;
+    font-size: 1.4rem;
+    color: #333;
+    margin: 0 0 15px 0;
+}
+.codex-details-section h3 .fas {
+    color: #B92B27;
+    margin-right: 10px;
+}
+.codex-details-section ul {
+    list-style: none;
+    padding: 0;
+}
+.codex-details-section li {
+    font-family: 'Merriweather', serif;
+    margin-bottom: 10px;
+    padding-left: 30px;
+    position: relative;
+}
+.codex-details-section li::before {
+    content: '\f058'; /* check circle */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: #B92B27;
+    position: absolute;
+    left: 0;
+    top: 5px;
+}
+.modal-footer-creepy {
+    flex-shrink: 0;
+    padding: 15px;
+    text-align: center;
+    background-color: rgba(0,0,0,0.03);
+    border-top: 2px dashed rgba(0,0,0,0.2);
+    font-family: 'Special Elite', monospace;
+    color: #555;
+}
+.modal-footer-creepy i {
+    color: #B92B27;
+}
+
+@media (max-width: 480px) {
+    .article-text h3 {
+        font-size: 1.2rem;
+    }
+    .article-text .article-excerpt {
+        font-size: 0.9rem;
+    }
+    .modal-header-creepy h2 {
+        font-size: 1.8rem;
+    }
+    .story-text-container p {
+        font-size: 0.8rem;
+    }
+}

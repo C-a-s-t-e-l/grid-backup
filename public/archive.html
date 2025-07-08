@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Archive - Eerie Grid PH</title>
+
+    <link rel="icon" href="https://cdn-icons-png.freepik.com/256/8494/8494367.png" type="image/png"/>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="archive.css" />
+    <link rel="stylesheet" href="chatbot.css" />
+</head>
+<body class="archive-page-body">
+    <nav class="eerie-navbar">
+      <div class="nav-container">
+        <a href="index.html" class="nav-logo-link">
+          <img src="https://cdn-icons-png.freepik.com/256/8494/8494367.png" alt="Eerie Grid PH Logo" class="nav-logo"/>
+          Eerie Grid <span class="ph-highlight-nav">PH</span>
+        </a>
+        <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-menu">
+          <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="map.html"><i class="fas fa-map-marked-alt"></i> The Grid</a></li>
+          <li><a href="archive.html" class="active"><i class="fas fa-archive"></i> The Archive</a></li>
+          <li><a href="codex.html"><i class="fas fa-book-skull"></i> Creature Codex</a></li>
+          <li><a href="lore.html"><i class="fas fa-book-tanakh"></i> Lore & Legends</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="archive-container">
+      <header class="page-header">
+        <h1>The Archive of Whispers</h1>
+        <p>Browse the grim catalog of the archipelago's haunted tales. Every file a chilling encounter.</p>
+      </header>
+
+      <section class="controls-section">
+        <div class="search-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="story-search-bar" placeholder="Search the shadows for a story..."/>
+        </div>
+        <div class="sort-wrapper">
+          <label for="sort-stories"><i class="fas fa-sort-amount-down"></i> Sort by:</label>
+          <select id="sort-stories">
+            <option value="newest" selected>Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title-az">Title (A-Z)</option>
+          </select>
+        </div>
+      </section>
+
+      <div id="story-list-container" class="story-list"></div>
+      <div id="pagination-container" class="pagination"></div>
+    </div>
+
+    <!-- MODAL START -->
+    <div id="story-modal" class="modal modal-hidden">
+      <div class="modal-outer-frame">
+        <div class="modal-content">
+          <button id="modal-close-button-top" class="modal-close-top" aria-label="Close story details">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="modal-header-creepy">
+            <h2 id="modal-story-title">Story Title Here</h2>
+            <p id="modal-story-location"><em><i class="fas fa-map-pin"></i> Location: Location Name Here</em></p>
+            <p id="modal-story-author"><em><i class="fas fa-user-ghost"></i> By: Author Name Here</em></p>
+          </div>
+          <div class="modal-body-scrollable">
+            <div class="modal-story-document">
+              <div id="modal-full-story" class="story-text-container"></div>
+              <div class="comments-section">
+                <h3 class="comments-header"><i class="fas fa-comments"></i> Community Echoes</h3>
+                <div id="comments-container" class="comments-container"></div>
+                <form id="comment-form" class="comment-form">
+                  <h4><i class="fas fa-pen-nib"></i> Leave Your Whisper</h4>
+                  <div class="form-field">
+                    <label for="comment-nickname">Your Nickname:</label>
+                    <input type="text" id="comment-nickname" name="nickname" required placeholder="Your investigator name..."/>
+                  </div>
+                  <div class="form-field">
+                    <label for="comment-text">Your Comment:</label>
+                    <textarea id="comment-text" name="comment_text" rows="3" required placeholder="Share your thoughts or similar experiences..."></textarea>
+                  </div>
+                  <input type="hidden" id="comment-story-id" name="story_id" />
+                  <button type="submit" class="eerie-button">Submit Comment</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- NEW, IMPROVED MODAL FOOTER -->
+          <div class="modal-document-footer">
+            <div class="modal-reaction-area">
+                <div id="reaction-display" class="reaction-display">
+                    <!-- JS will populate this -->
+                </div>
+                <div class="reaction-trigger-area">
+                    <div id="reaction-palette" class="reaction-palette">
+                        <button class="reaction-button" data-reaction="spooked" data-tooltip="Spooked">😱</button>
+                        <button class="reaction-button" data-reaction="intriguing" data-tooltip="Intriguing">🤔</button>
+                        <button class="reaction-button" data-reaction="tragic" data-tooltip="Tragic">😥</button>
+                        <button class="reaction-button" data-reaction="believable" data-tooltip="Believable">🧐</button>
+                        <button class="reaction-button" data-reaction="absurd" data-tooltip="Absurd">😂</button>
+                    </div>
+                    <button id="react-button" class="eerie-button react-button">
+                        <i class="far fa-smile"></i> React
+                    </button>
+                </div>
+            </div>
+            <div class="modal-action-buttons">
+                <button id="modal-view-on-grid" class="eerie-button secondary">
+                    <i class="fas fa-map-marked-alt"></i> View on Grid
+                </button>
+                <button id="modal-close-button-bottom" class="eerie-button">
+                    <i class="fas fa-book"></i> Close File
+                </button>
+            </div>
+          </div>
+          <!-- END OF NEW MODAL FOOTER -->
+        </div>
+      </div>
+    </div>
+    <!-- MODAL END -->
+   
+    <div id="chat-widget" class="chat-widget-hidden">
+      <div id="chat-header">
+        Archive Keeper
+        <button id="chat-close-button">×</button>
+      </div>
+      <div id="chat-messages">
+        <div class="chat-message ai-message">
+          <p>The archives are open. What knowledge do you seek from the shadows?</p>
+        </div>
+      </div>
+      <div id="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Ask about a story or place..."/>
+        <button id="chat-send-button">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+
+    <button id="chat-toggle-button">
+      <i class="fas fa-book-skull"></i>
+    </button>
+
+    <footer class="archive-page-footer">
+      <p>© <span id="currentYear"></span> Eerie Grid PH. The archive is eternal.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="archive.js"></script>
+    <script src="chatbot.js"></script>
+    <script>
+      document.getElementById("currentYear").textContent = new Date().getFullYear();
+
+      const navToggle = document.querySelector(".nav-toggle");
+      const navMenu = document.querySelector(".nav-menu");
+      if (navToggle && navMenu) {
+        navToggle.addEventListener("click", () => {
+          const isExpanded = navToggle.getAttribute("aria-expanded") === "true" || false;
+          navToggle.setAttribute("aria-expanded", !isExpanded);
+          navMenu.classList.toggle("active");
+        });
+      }
+    </script>
+</body>
+</html>
