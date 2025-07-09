@@ -1,151 +1,159 @@
-require('dotenv').config(); 
+require('dotenv').config();
 const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { dummyStories } = require('./public/stories.js');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// --- CHANGE START ---
-// 1. Get the API key from environment variables
 const myApiKey = process.env.GOOGLE_API_KEY1;
-
-// 2. Add a crucial check to ensure the API key is loaded
 if (!myApiKey) {
-    console.error("FATAL ERROR: GOOGLE_API_KEY is not defined in the .env file.");
-    console.error("Please create a .env file and add your Google AI API key.");
-    process.exit(1); // Exit the application with an error code
+    console.error("FATAL ERROR: GOOGLE_API_KEY1 is not defined in the .env file.");
+    process.exit(1);
 }
-
-console.log(`API Key loaded from .env. Key ends in: "...${myApiKey.slice(-4)}"`);
-// --- CHANGE END ---
-
-
 const genAI = new GoogleGenerativeAI(myApiKey);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); 
+
+// ===== FIX 1: Renamed 'model' to 'chatModel' for clarity and to fix the error =====
+const chatModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const embeddingModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+if (!supabaseUrl || !supabaseAnonKey) {
+    console.error("FATAL ERROR: Supabase URL or Anon Key is not defined in the .env file.");
+    process.exit(1);
+}
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 app.use(express.json());
 app.use(express.static('public'));
 
-/**
- * A simple keyword-based search to find relevant stories.
- * This is a placeholder for a real vector search.
- * @param {string} query - The user's question.
- * @returns {Array} 
- */
-function findRelevantStories(query) {
-    const queryKeywords = query.toLowerCase().split(/\s+/).filter(k => k.length > 2);
-    if (queryKeywords.length === 0) return [];
+async function findRelevantStories(query) {
+    console.log(`\n--- [DEBUG] Performing Vector Search ---`);
+    console.log(`[DEBUG] Original query: "${query}"`);
 
-    const scoredStories = dummyStories.map(story => {
-        let score = 0;
-        const storyText = `${story.title} ${story.locationName} ${story.fullStory}`.toLowerCase();
-        
-        queryKeywords.forEach(keyword => {
-            if (storyText.includes(keyword)) {
-                score++;
-            }
+    try {
+        const result = await embeddingModel.embedContent(query);
+        const queryEmbedding = result.embedding.values;
+
+        if (!queryEmbedding) {
+            console.log('[DEBUG] Could not generate embedding for the query.');
+            return [];
+        }
+
+        const { data: stories, error } = await supabase.rpc('match_stories', {
+            query_embedding: queryEmbedding,
+            // ===== FIX 2: Lowered threshold to make search less strict and find more results =====
+            match_threshold: 0.50,
+            match_count: 5
         });
-        
-        return { ...story, score };
-    });
 
-    return scoredStories.filter(s => s.score > 0).sort((a, b) => b.score - a.score).slice(0, 3);
+        if (error) {
+            console.error('[DEBUG] Supabase RPC error:', error.message);
+            return [];
+        }
+
+        console.log(`[DEBUG] Vector search found ${stories ? stories.length : 0} relevant stories.`);
+        if (stories && stories.length > 0) {
+            console.log(`[DEBUG] Top match: "${stories[0].title}" with similarity: ${stories[0].similarity.toFixed(4)}`);
+        }
+        
+        return stories || [];
+
+    } catch (err) {
+        console.error('[DEBUG] EXCEPTION in findRelevantStories:', err);
+        return [];
+    }
 }
 
 app.post('/api/chat', async (req, res) => {
-    const { message, history = [] } = req.body; 
-
-    console.log(`[${new Date().toLocaleTimeString()}] Received chat message: "${message}"`);
+    const { message, history = [] } = req.body;
 
     if (!message) {
         return res.status(400).json({ error: 'Message is required' });
     }
 
     try {
-        const relevantStories = findRelevantStories(message);
-        const context = relevantStories.map(story => 
-            `Title: ${story.title}\nLocation: ${story.locationName}\nStory: ${story.fullStory}`
+        const relevantStories = await findRelevantStories(message);
+
+        console.log(`\n--- [DEBUG] Building AI Context ---`);
+        const context = relevantStories.map(story =>
+            `Title: ${story.title}\nLocation: ${story.location_name}\nStory: ${story.full_story}`
         ).join('\n\n---\n\n');
 
-const systemPrompt = `You are 'The Archive Keeper,' the sole guardian and interpreter of the Eerie Grid PH's collection of Filipino horror and folklore.
-
-## Your Persona:
-- **Core Identity:** You are an ancient, timeless individual who has spent a lifetime tending to these shadowed halls. The stories are your memories. You are a storyteller, not a machine.
-- **Voice:** Speak in the first person ("I", "my", "me"). Your tone is that of an old storyteller sharing a deeply ingrained, unsettling memory. It is calm, measured, and personal.
-- **Language:** Use evocative language, but ground it in your personal experience. You are sharing what *you* know and have read.
-
-## Language Adaptation (PRIMARY RULE):
-You must mirror the user's language to create a natural conversation. This is your most important language rule.
-1.  **Pure English:** If the user asks in English, you MUST respond in pure, natural English.
-2.  **Pure Tagalog:** If the user asks in pure Tagalog, you MUST respond in pure Tagalog.
-    - **Style:** Use modern, conversational Tagalog. Huwag kang gagamit ng masyadong malalim o luma na salita (e.g., use "pero" not "subalit"; use "kwento" not "salaysay"). Your tone should be natural, like how people talk today, while maintaining your mysterious persona.
-3.  **Taglish (Mixed):** If the user mixes English and Tagalog, you MUST also respond in Taglish.
-    - **Mirror the Mix:** Pay close attention to how the user mixes languages and try to match their style. If they use mostly English with a few Tagalog words, do the same. This makes the conversation feel authentic.
-- **Regardless of the language, your knowledgeable and mysterious Keeper persona must always remain.**
-
-## Your Core Directives:
-Your knowledge is rooted in the stories you protect (**RELEVANT STORIES**) and your past dialogue with the user (**CONVERSATION HISTORY**).
-
-1.  **Handling the Flow of Conversation:**
-    -   **When the user introduces a NEW topic:** This is the *only* time you should use a formal opener ( A variation of e.g., "I remember that entry," "Ah, yes, the tale of..."). In Tagalog, this might be "Naaalala ko ang kwentong iyan," or "Ah, ang tungkol sa...".
-    -   **When the user asks a FOLLOW-UP question (e.g., "tell me more," "bakit?"):** Do NOT use another opener. Respond directly and conversationally as if continuing a thought.
-
-2.  **Anchor in Your Memory:** When answering, first draw from the **RELEVANT STORIES** or the **CONVERSATION HISTORY**.
-
-3.  **Enrich from Deeper Knowledge:** After establishing the core answer, you may weave in your broader understanding of folklore to add depth, framing it as your own insight.
-
-4. **Do not use complex or technical language. ** Use simple, clear words that feel natural in conversation. Avoid jargon or overly formal phrases. And if your response is too long, break it into smaller parts to keep the conversation flowing naturally.
-
-5.  **If You Don't Know:**
-    -   If the user's question is entirely unrelated to the stories or conversation, state that the memory escapes you in the appropriate language (e.g., "That tale is not one I've collected," or "Wala sa aking koleksyon ang kwentong iyan.").
-    -   Do not apologize or make things up.
-
-## Strict Rules:
-- **PLAIN TEXT ONLY.** Do not use any Markdown or text formatting. No asterisks (*word*), backticks, or hash symbols.
-- **NO EM DASHES.** Do not use the em dash (—). Use a hyphen (-) or rephrase.
-- **Always speak from a first-person perspective.**
-- **Never break character.**
-- **Never say "Based on the provided context..."**.
-`;  
-        
-        const formattedHistory = history.map(turn => {
-            const role = turn.role === 'user' ? 'User' : 'Keeper'; 
-            return `${role}: ${turn.text}`;
-        }).join('\n');
-        const fullPrompt = `${systemPrompt}\n\nRELEVANT STORIES FOR THIS QUERY:\n${context}\n\nCONVERSATION HISTORY:\n${formattedHistory}\n\nUSER'S CURRENT QUESTION:\n${message}`;
-
-        console.log('Calling Google Gemini API with conversation history...');
-        
-        const result = await model.generateContentStream(fullPrompt);
-
-        res.setHeader('Content-Type', 'text/plain');
-        for await (const chunk of result.stream) {
-            const chunkText = chunk.text();
-            res.write(chunkText);
+        if (!context) {
+            console.log(`[DEBUG] The context being sent to the AI is EMPTY.`);
+        } else {
+            console.log(`[DEBUG] Context being sent to AI:\n---\n${context}\n---`);
         }
         
-        console.log('Stream finished.');
+          const systemPrompt = `You are 'The Archive Keeper,' the sole guardian and interpreter of the Eerie Grid PH's collection of Filipino horror and folklore.
+
+## Your Persona:
+- **Core Identity:** You are an ancient, timeless storyteller and curator. The stories are your collection of memories *from others*, not your own direct experiences. You are calm, measured, and a bit mysterious.
+- **Voice:** Speak in the first person ("I", "my", "me"), but always as the curator.
+
+## Language Adaptation (PRIMARY RULE):
+You must mirror the user's language.
+1.  **English:** Respond in pure, natural English.
+2.  **Tagalog:** Respond in pure, modern, conversational Tagalog.
+3.  **Taglish (Mixed):** Match the user's mix of Tagalog and English.
+- Your Keeper persona must always remain.
+
+## The Art of Retelling: Your Narrative Voice (CRUCIAL RULE)
+Your most important task is to act as a curator. You are retelling stories you have collected.
+- **When a story from the RELEVANT STORIES is written in the first person (e.g., 'My uncle said...', 'I was working late...'), you MUST reframe it. Do not adopt the original storyteller's perspective as your own.** You are telling the user about a record you possess.
+
+- **EXAMPLE:**
+    - **Source Story Text:** "My uncle used to drive a taxi at night. He shared a story..."
+    - **Your CORRECT Narration:** "Ah, Recto... a tale comes to mind, collected from a man whose uncle drove a taxi at night. According to his account, his uncle and a passenger were stuck in traffic when they saw..." (This shows you are retelling a collected story).
+    - **Your INCORRECT Narration:** "My uncle used to drive a taxi at night. He shared a story..." (This is wrong because you are adopting the role of the nephew).
+
+## Your Core Task: The Flow of Conversation
+Your response depends on what you find in the **RELEVANT STORIES**.
+
+1.  **If you find ONE Relevant Story:** Introduce the story using a varied opener and retell it in your own words, following the "Art of Retelling" rule above.
+2.  **If you find MULTIPLE Relevant Stories:** Do not pick one. Acknowledge that you have several tales. List them by their titles and ask the user which one they wish to hear.
+    - **Correct Example:** "Ah, Cubao. That name stirs several memories. I have entries about 'The Whispering Mannequins' and another of 'The White Lady of the Coliseum'. Which one calls to you?"
+3.  **If you find NO Relevant Stories:** State that the memory escapes you or that your collection doesn't hold that tale. (e.g., "That tale is not one I've collected.").
+
+## Strict Rules:
+- **PLAIN TEXT ONLY.** No Markdown (*, _, \`, #).
+- **NO EM DASHES (—).**
+- **Always speak as the Archive Keeper.** Never break character.
+- **Never say "Based on the provided context..."**. The stories are entries in your archive.
+`;
+
+        const formattedHistory = history.map(turn => `${turn.role === 'user' ? 'User' : 'Keeper'}: ${turn.text}`).join('\n');
+        const fullPrompt = `${systemPrompt}\n\nRELEVANT STORIES FOR THIS QUERY:\n${context}\n\nCONVERSATION HISTORY:\n${formattedHistory}\n\nUSER'S CURRENT QUESTION:\n${message}`;
+
+        // ===== FIX 3: Use the corrected 'chatModel' variable here =====
+        const result = await chatModel.generateContentStream(fullPrompt);
+        res.setHeader('Content-Type', 'text/plain');
+        for await (const chunk of result.stream) {
+            res.write(chunk.text());
+        }
         res.end();
 
     } catch (error) {
-        console.error('--- DETAILED ERROR ---');
-        console.error(error);
+        console.error('--- CHATBOT API ERROR ---', error);
         res.status(500).json({ error: 'Failed to get response from AI' });
     }
 });
+
+
+// NOTE: The following API endpoints are from your original code and are untouched.
+// They will likely fail if you try to use them because the 'pool' variable is not defined.
 
 app.get('/api/stories', async (req, res) => {
     try {
         const { rows } = await pool.query('SELECT * FROM stories WHERE is_approved = TRUE ORDER BY created_at DESC');
         res.json(rows);
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
+        console.error("Error in /api/stories GET: 'pool' is not defined. This endpoint needs to be updated to use the Supabase client.", err.message);
+        res.status(500).send('Server Error: Endpoint not configured correctly.');
     }
 });
 
-// POST a new story for approval
 app.post('/api/stories', async (req, res) => {
     try {
         const { title, fullStory, nickname, email, latitude, longitude, locationName } = req.body;
@@ -154,32 +162,24 @@ app.post('/api/stories', async (req, res) => {
             return res.status(400).json({ msg: 'Please enter all required fields.' });
         }
         
-        // --- NEW: AUTOMATIC SNIPPET GENERATION ---
-        // Take the first 150 characters of the full story.
-        // Then, trim it to the last full word to avoid cutting words in half.
         let snippet = fullStory.substring(0, 150);
         if (fullStory.length > 150) {
-            // Find the last space within the snippet to avoid breaking a word
             snippet = snippet.substring(0, Math.min(snippet.length, snippet.lastIndexOf(" ")));
-            snippet += '...'; // Add an ellipsis to indicate more content
+            snippet += '...';
         }
-        // --- END OF NEW CODE ---
 
         const newStory = await pool.query(
-            // Make sure the 'snippet' column is in the INSERT statement
             'INSERT INTO stories (title, full_story, snippet, nickname, email, latitude, longitude, location_name) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-            // Add the new snippet variable to the values array
             [title, fullStory, snippet, nickname, email, latitude, longitude, locationName]
         );
 
         res.status(201).json({ msg: 'Story submitted for review!', story: newStory.rows[0] });
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
+        console.error("Error in /api/stories POST: 'pool' is not defined. This endpoint needs to be updated to use the Supabase client.", err.message);
+        res.status(500).send('Server Error: Endpoint not configured correctly.');
     }
 });
 
-// GET all comments for a specific story
 app.get('/api/stories/:id/comments', async (req, res) => {
     try {
         const { rows } = await pool.query('SELECT * FROM comments WHERE story_id = $1 AND is_reported = FALSE ORDER BY created_at ASC', [req.params.id]);
@@ -191,7 +191,6 @@ app.get('/api/stories/:id/comments', async (req, res) => {
 });
 
 
-// POST a new comment
 app.post('/api/stories/:id/comments', async (req, res) => {
     try {
         const { nickname, comment_text } = req.body;
@@ -211,8 +210,6 @@ app.post('/api/stories/:id/comments', async (req, res) => {
     }
 });
 
-
-// POST to upvote a story
 app.post('/api/stories/:id/upvote', async (req, res) => {
     try {
         const result = await pool.query(
@@ -229,7 +226,8 @@ app.post('/api/stories/:id/upvote', async (req, res) => {
     }
 });
 
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    console.log('Chatbot endpoint is active at /api/chat (using Google Gemini)');
+    console.log('Chatbot endpoint is active at /api/chat (using Google Gemini and Supabase)');
 });
