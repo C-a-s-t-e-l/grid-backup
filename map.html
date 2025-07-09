@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-g">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Grid - Eerie Grid PH</title>
+ 
+    <link rel="icon" href="https://cdn-icons-png.freepik.com/256/8494/8494367.png" type="image/png">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.11.0/dist/geosearch.css" />
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="chatbot.css">
+    
+</head>
+<body class="map-page-body">
+
+    <nav class="eerie-navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo-link">
+                <img src="https://cdn-icons-png.freepik.com/256/8494/8494367.png" alt="Eerie Grid PH Logo" class="nav-logo">
+                Eerie Grid  <span class="ph-highlight-nav">PH</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="map.html" class="active"><i class="fas fa-map-marked-alt"></i> The Grid</a></li>
+                <li><a href="archive.html"><i class="fas fa-archive"></i> The Archive</a></li>
+                <li><a href="codex.html"><i class="fas fa-book-skull"></i> Creature Codex</a></li>  
+                <li><a href="lore.html"><i class="fas fa-book-tanakh"></i> Lore & Legends</a></li> 
+            </ul>
+        </div>
+    </nav>
+
+    <div class="horrorMapContainer">
+        <header class="map-page-header">
+            <h1>Chart of Horrors</h1>
+            <p class="map-tagline">Navigate the paranormal. Every pin a whisper, every story a warning.</p>
+             <div id="external-map-search-container">
+            </div>
+        </header>
+        
+        <div class="main-content-area">
+            <div id="map-column">
+                <div id="map">
+                    <div class="map-loading-overlay">
+                        <p>Summoning the spirits of the map...</p>
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </div>
+                <div class="map-controls">
+                    <button id="toggle-world-button" class="eerie-button">
+                        <i class="fas fa-globe-americas"></i> Unveil World Horrors
+                    </button>
+                    <button id="toggle-post-form-button" class="eerie-button accent">
+                        <i class="fas fa-pen-nib"></i> Share Your Terror
+                    </button> 
+                </div>
+            </div>
+
+            <div id="form-column" class="hidden-form">
+                <form action="" id="storyForm">
+                    <h2><i class="fas fa-ghost"></i> Whisper Your Nightmare</h2>
+                    <div class="form-field" id="titleDiv">
+                        <label for="title">Name Your Encounter:</label>
+                        <input type="text" id="title" name="title" placeholder="e.g., The Whispering Walls of Intramuros" required>
+                    </div>
+                    <div class="form-field" id="nicknameDiv">
+                        <label for="nickname">Your Nickname (as it will appear):</label>
+                        <input type="text" id="nickname" name="nickname" placeholder="e.g., UrbanLegendSeeker" required>
+                    </div>
+                    <div class="form-field" id="emailDiv">
+                        <label for="email">Your Email (Optional):</label>
+                        <input type="email" id="email" name="email" placeholder="Kept private, for admin use only">
+                    </div>
+                    <div class="form-field" id="storyDiv">
+                        <label for="fullStory">Your Chilling Tale:</label>
+                        <textarea id="fullStory" name="fullStory" rows="6" placeholder="Describe the unexplained, the unsettling, the terrifying..." required></textarea>
+                    </div>
+                    <div class="form-field-group">
+                        <div class="form-field" id="locationDiv">
+                            <label for="locationName"><i class="fas fa-map-pin"></i> Cursed Location:</label>
+                            <input type="text" id="locationName" name="locationName" readonly required>
+                        </div>
+                        <div class="form-field" id="latitudeDiv">
+                            <label for="latitude">Latitude:</label>
+                            <input type="text" id="latitude" name="latitude" readonly required>
+                        </div>
+                        <div class="form-field" id="longitudeDiv">
+                            <label for="longitude">Longitude:</label>
+                            <input type="text" id="longitude" name="longitude" readonly required>
+                        </div>
+                    </div>
+                    <button type="submit" class="eerie-button submit-story">
+                        <i class="fas fa-paper-plane"></i> Add to the Grim Record
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="section-divider-map">
+            <i class="fas fa-skull-crossbones"></i>
+        </div>
+    </div>
+    
+    <!-- MODAL START -->
+    <div id="story-modal" class="modal modal-hidden">
+        <div class="modal-outer-frame"> 
+            <div class="modal-content">
+                <button id="modal-close-button" class="modal-close" aria-label="Close story details">
+                    <i class="fas fa-times"></i> 
+                </button>
+                <div class="modal-header-creepy">
+                    <h2 id="modal-story-title">Story Title Here</h2>
+                    <p id="modal-story-location"><em><i class="fas fa-map-pin"></i> Location: Location Name Here</em></p>
+                </div>
+                <div class="modal-body-scrollable">
+                    <div class="modal-story-document"> 
+                        <div id="modal-full-story" class="story-text-container">
+                           <!-- JS populates this -->
+                        </div>
+                        <div class="comments-section">
+                            <h3 class="comments-header"><i class="fas fa-comments"></i> Community Echoes</h3>
+                            <div id="comments-container" class="comments-container">
+                               <!-- JS populates this -->
+                            </div>
+                            <form id="comment-form" class="comment-form">
+                                <h4><i class="fas fa-pen-nib"></i> Leave Your Whisper</h4>
+                                <div class="form-field">
+                                    <label for="comment-nickname">Your Nickname:</label>
+                                    <input type="text" id="comment-nickname" name="nickname" required placeholder="Your investigator name...">
+                                </div>
+                                <div class="form-field">
+                                    <label for="comment-text">Your Comment:</label>
+                                    <textarea id="comment-text" name="comment_text" rows="3" required placeholder="Share your thoughts or similar experiences..."></textarea>
+                                </div>
+                                <input type="hidden" id="comment-story-id" name="story_id">
+                                <button type="submit" class="eerie-button">Submit Comment</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- NEW, IMPROVED MODAL FOOTER -->
+                <div class="modal-document-footer">
+                    <div class="modal-reaction-area">
+                        <div id="reaction-display" class="reaction-display">
+                            <!-- JS will populate this -->
+                        </div>
+                        <div class="reaction-trigger-area">
+                            <div id="reaction-palette" class="reaction-palette">
+                                <button class="reaction-button" data-reaction="spooked" data-tooltip="Spooked">😱</button>
+                                <button class="reaction-button" data-reaction="intriguing" data-tooltip="Intriguing">🤔</button>
+                                <button class="reaction-button" data-reaction="tragic" data-tooltip="Tragic">😥</button>
+                                <button class="reaction-button" data-reaction="believable" data-tooltip="Believable">🧐</button>
+                                <button class="reaction-button" data-reaction="absurd" data-tooltip="Absurd">😂</button>
+                            </div>
+                            <button id="react-button" class="eerie-button react-button">
+                                <i class="far fa-smile"></i> React
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-action-buttons">
+                        <p class="footer-creepy-text"><i class="fas fa-exclamation-triangle"></i> Some doors are best left unopened.</p>
+                    </div>
+                </div>
+                <!-- END OF NEW MODAL FOOTER -->
+            </div>
+        </div>
+    </div>
+    <!-- MODAL END -->
+
+    <div id="chat-widget" class="chat-widget-hidden">
+        <div id="chat-header">
+            <div id="keeper-info">
+                <img src="/images/keeper_icon.png" alt="Archive Keeper Icon">
+                <span>Archive Keeper</span>
+            </div>
+            <button id="chat-close-button">×</button>
+        </div>
+        <div id="chat-messages">
+            <div class="chat-message ai-message">
+                <p>The archives are open. What knowledge do you seek from the shadows?</p>
+            </div>
+        </div>
+        <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Ask about a story or place...">
+            <button id="chat-send-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+     <button id="chat-toggle-button">
+        <img src="/images/keeper_icon.png" alt="">
+    </button>
+
+    <footer class="map-page-footer">
+        <p>© <span id="currentYearMap"></span> Eerie Grid PH. The map remembers.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-geosearch@3.11.0/dist/geosearch.umd.js"></script>
+    
+    <script src="supabase-client.js"></script> 
+    <script src="client.js"></script>
+    <script src="chatbot.js"></script>
+
+    <script>
+        document.getElementById('currentYearMap').textContent = new Date().getFullYear();
+
+        const navToggle = document.querySelector('.nav-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', () => {
+                const isExpanded = navToggle.getAttribute('aria-expanded') === 'true' || false;
+                navToggle.setAttribute('aria-expanded', !isExpanded);
+                navMenu.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>

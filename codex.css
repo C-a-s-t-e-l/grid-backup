@@ -1,0 +1,365 @@
+.codex-page-body {
+    font-family: var(--font-body);
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png'),
+                      radial-gradient(ellipse at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.9) 100%);
+    background-attachment: fixed;
+    padding-top: 70px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.codex-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    flex-grow: 1; 
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.page-header h1 {
+    font-family: var(--font-creepy);
+    font-size: 3.5rem;
+    color: var(--accent-color);
+    text-shadow: 1px 1px 0 #000, 0 0 10px var(--accent-hover);
+}
+
+.page-header p {
+    font-family: var(--font-narrative);
+    font-size: 1.2rem;
+    color: var(--text-muted);
+}
+
+.codex-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 30px;
+}
+
+.codex-card {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: visible;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.codex-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 15px var(--accent-hover);
+    
+}
+
+.codex-card-img {
+   width: 100%;
+    height: 220px;
+    object-fit: cover;
+    filter: saturate(0.8) contrast(1.1);
+    transition: transform 0.4s ease;
+    
+   
+    border-top-left-radius: 8px; 
+    border-top-right-radius: 8px; 
+
+    position: relative;
+}
+
+.codex-card:hover .codex-card-img {
+   transform: scale(1.5) translateY(-15px);
+    z-index: 10;
+}
+
+.codex-card-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0) 100%);
+    text-align: center;
+}
+
+.codex-card-title {
+    font-family: var(--font-creepy);
+    font-size: 2.2rem;
+    color: #f0f0f0;
+    margin: 0 0 5px 0;
+    line-height: 1;
+    text-shadow: 2px 2px 5px #000;
+}
+
+.codex-card-tagline {
+    font-family: var(--font-narrative);
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+
+#codex-modal .modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+    overflow: hidden; 
+}
+
+#codex-modal .modal-codex-image-header,
+#codex-modal .modal-footer-creepy {
+    flex-shrink: 0;
+}
+
+#codex-modal .modal-body-scrollable {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#codex-modal .modal-header-creepy {
+    flex-shrink: 0;
+}
+
+#codex-modal .modal-story-document {
+    overflow-y: auto; 
+    padding: 20px; 
+    flex-grow: 1; 
+}
+
+#codex-modal .modal-codex-image-header {
+    width: 100%;
+    max-height: 30vh;
+    object-fit: contain;
+    object-position: center;
+    border-bottom: 2px solid #bcaea0;
+    background-color: #000;
+}
+
+#codex-modal .codex-details-section {
+    margin-top: 25px;
+    padding: 15px;
+    border: 1px dashed #d4c8b8;
+    border-radius: 4px;
+    background-color: rgba(0,0,0,0.02);
+}
+
+#codex-modal .codex-details-section h3 {
+    font-family: var(--font-narrative);
+    color: var(--ink-color);
+    margin: 0 0 15px 0;
+    font-size: 1.3rem;
+}
+
+#codex-modal .codex-details-section h3 i {
+    margin-right: 8px;
+    color: var(--stamp-color);
+}
+
+#codex-modal .codex-details-section ul {
+    list-style: none;
+    padding: 0;
+    color: var(--ink-color);
+}
+
+#codex-modal .codex-details-section li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 10px;
+    font-family: var(--font-body);
+}
+
+#codex-modal .codex-details-section li::before {
+    content: '\f058';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    top: 2px;
+    color: var(--stamp-color);
+    opacity: 0.8;
+}
+
+#codex-modal .codex-details-section p {
+    color: var(--ink-color);
+    font-family: var(--font-body);
+    line-height: 1.7;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding-top: 90px;
+}
+
+
+.modal-outer-frame {
+    
+    position: relative;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh; 
+    background-color: #2a2a2a;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    border-radius: 4px;
+
+    display: flex;
+    flex-direction: column;
+}
+/* 
+
+.codex-card {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: visible;
+    position: relative; 
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+ 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.codex-card:hover {
+  
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 15px var(--accent-hover);
+}
+
+.codex-card-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    filter: saturate(0.8) contrast(1.1);
+    transition: transform 0.4s ease;
+    
+   
+    border-top-left-radius: 8px; 
+    border-top-right-radius: 8px; 
+
+    position: relative;
+}
+
+
+.codex-card:hover .codex-card-img {
+    transform: scale(1.5) translateY(-15px);
+    
+    z-index: 10;
+}
+
+
+.codex-card-content {
+    padding: 16px;
+}
+
+.codex-card-title {
+    margin: 0 0 8px;
+    color: #fff; 
+}
+
+.codex-card-tagline {
+    margin: 0;
+    color: #ccc; 
+    font-size: 0.9em;
+} */
+
+
+
+.modal-body-scrollable {
+    flex-grow: 1;        
+    overflow-y: auto;    
+    min-height: 0;      
+    color: #3D352E; 
+}
+
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 2.8rem;
+    }
+
+    .codex-grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    #codex-modal .modal-codex-image-header {
+        max-height: 30vh;
+    }
+    
+    #codex-modal #modal-codex-title {
+        font-size: 2.2rem;
+    }
+    #codex-modal .story-text-container,
+    #codex-modal .codex-details-section p,
+    #codex-modal .codex-details-section li {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .codex-container {
+        padding: 20px 15px;
+    }
+    
+    .page-header h1 {
+        font-size: 2.2rem;
+    }
+    .page-header p {
+        font-size: 1rem;
+    }
+
+    .codex-grid-container {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .codex-card-title {
+        font-size: 2rem;
+    }
+
+    #codex-modal .modal-codex-image-header {
+        max-height: 25vh;
+    }
+    
+    #codex-modal .modal-story-document {
+        padding: 15px;
+    }
+
+    #codex-modal .modal-header-creepy {
+        padding: 20px 15px 10px;
+    }
+    
+    #codex-modal #modal-codex-title {
+        font-size: 1.8rem;
+    }
+
+    #codex-modal .story-text-container,
+    #codex-modal .codex-details-section p,
+    #codex-modal .codex-details-section li {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    #codex-modal .codex-details-section h3 {
+        font-size: 1.1rem;
+    }
+}

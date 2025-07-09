@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creature Codex - Eerie Grid PH</title>
+ 
+    <link rel="icon" href="https://cdn-icons-png.freepik.com/256/8494/8494367.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="codex.css">
+    <link rel="stylesheet" href="chatbot.css">   
+</head>
+<body class="codex-page-body">
+
+    <nav class="eerie-navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo-link">
+                <img src="https://cdn-icons-png.freepik.com/256/8494/8494367.png" alt="Eerie Grid PH Logo" class="nav-logo">
+                Eerie Grid  <span class="ph-highlight-nav">PH</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="map.html"><i class="fas fa-map-marked-alt"></i> The Grid</a></li>
+                 <li><a href="archive.html"><i class="fas fa-archive"></i> The Archive</a></li>
+                <li><a href="codex.html" class="active"><i class="fas fa-book-skull"></i> Creature Codex</a></li> 
+                  <li><a href="lore.html" ><i class="fas fa-book-tanakh"></i> Lore & Legends</a></li> 
+            </ul>
+        </div>
+    </nav>
+
+    <div class="codex-container">
+        <header class="page-header">
+            <h1>The Creature Codex</h1>
+            <p>An archive of entities encountered in the Philippine archipelago. Know your enemy.</p>
+        </header>
+
+        <div id="codex-grid" class="codex-grid-container"></div>
+    </div>
+
+    <div id="codex-modal" class="modal modal-hidden">
+        <div class="modal-outer-frame"> 
+            <div class="modal-content">
+                <button id="codex-modal-close-button" class="modal-close" aria-label="Close creature details">
+                    <i class="fas fa-times"></i> 
+                </button>
+                
+                <img id="modal-codex-image" src="" alt="Creature Image" class="modal-codex-image-header">
+
+                <div class="modal-body-scrollable">
+                    <div class="modal-header-creepy">
+                        <h2 id="modal-codex-title">Creature Name Here</h2>
+                    </div>
+                    <div class="modal-story-document"> 
+                        <div id="modal-codex-description" class="story-text-container"></div>
+                        
+                        <div class="codex-details-section">
+                            <h3><i class="fas fa-bolt"></i> Known Characteristics</h3>
+                            <ul id="modal-codex-characteristics"></ul>
+                        </div>
+
+                        <div class="codex-details-section">
+                            <h3><i class="fas fa-shield-halved"></i> Field Operative Warning</h3>
+                            <p id="modal-codex-warning"></p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="modal-footer-creepy">
+                    <p><i class="fas fa-exclamation-triangle"></i> Information is power. Use it wisely.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+<div id="chat-widget" class="chat-widget-hidden">
+        <div id="chat-header">
+            <div id="keeper-info">
+                <img src="/images/keeper_icon.png" alt="Archive Keeper Icon">
+                <span>Archive Keeper</span>
+            </div>
+            <button id="chat-close-button">×</button>
+        </div>
+        <div id="chat-messages">
+            <div class="chat-message ai-message">
+                <p>The archives are open. What knowledge do you seek from the shadows?</p>
+            </div>
+        </div>
+        <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Ask about a story or place...">
+            <button id="chat-send-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+      <button id="chat-toggle-button">
+        <img src="/images/keeper_icon.png" alt="">
+    </button>
+    <footer class="map-page-footer">
+        <p>© <span id="currentYearMap"></span> Eerie Grid PH. The archive is eternal.</p>
+    </footer>
+     <script src="chatbot.js"></script>
+
+    <script>
+        const creatures = [
+    {
+        id: 'manananggal',
+        name: 'Manananggal',
+        tagline: 'Ang Katawang Hati',
+        imageSrc: 'https://preview.redd.it/0q397h7v45991.png?width=640&crop=smart&auto=webp&s=780c573f92a7b16dd8454ff10198e9287c921a0e',
+        description: 'Sa umaga, isa siyang napakagandang babae na akala mo ay mahinhin. Pero pagsapit ng hatinggabi, tinatanggal niya ang kalahati ng kanyang katawan. Goodbye, lower body. Lilipad ang itaas na parte na may mala-paniking pakpak para maghanap ng biktima, lalo na mga buntis, para sipsipin ang puso ng sanggol gamit ang dilang parang sinulid.',
+        characteristics: [
+            'Pang-gabi lang at may pakpak (yung itaas na parte).',
+            'Suko sa bawang, asin, at matutulis na bagay tulad ng punyal.',
+            'Ang kahinaan niya ay ang naiwang katawan.',
+            'Nag-aanyong magandang dilag para makakuha ng tiwala.'
+        ],
+        warning: 'Para matalo, hanapin mo ang katawan niyang naiwan. Budburan mo ng asin o durog na bawang. Hindi na siya makakabalik. Pag sumikat ang araw, abo na lang siya.'
+    },
+    {
+        id: 'kapre',
+        name: 'Kapre',
+        tagline: 'Ang Bantay ng Punongkahoy',
+        imageSrc: 'https://hetappi.info/fantasy/illust/kapre.png',
+        description: 'Isang dambuhalang maitim na nakatira sa malalaking puno tulad ng Balete o Acacia. Laging may hawak na tabakong hindi nauubos ang sindi. Hindi naman laging masama, pero maloko. Mahilig magligaw ng mga tao sa gubat. You think you\'re going straight, pero paikot-ikot ka lang pala sa teritoryo niya.',
+        characteristics: [
+            'Malakas ang amoy ng tabako sa paligid.',
+            'Mahilig sa sugal at mga kumikinang na gamit.',
+            'Kayang maging invisible sa paningin ng tao.',
+            'Laging nakaupo sa mga sanga ng matatandang puno.'
+        ],
+        warning: 'Kung gusto mo siyang maging kaibigan, alayan mo ng yosi. Para di ka maligaw sa kanyang teritoryo, baliktarin mo ang suot mong damit. Huwag na huwag mong gagalitin, or else.'
+    },
+    {
+        id: 'tiyanak',
+        name: 'Tiyanak',
+        tagline: 'Ang Sanggol na Demonyo',
+        imageSrc: 'https://i0.wp.com/shoggoth.net/wp-content/uploads/2022/05/TIYANAK.png?ssl=1',
+        description: 'Isang demonyong nag-aanyong sanggol. Gagamitin niya ang iyak niya para akitin ka sa gubat o sa mga abandonadong lugar. Akala mo, isang anghel na naligaw. Pag binuhat mo na, that\'s when the horror begins. Lalabas ang tunay niyang anyo—pangil, kuko, at matinding galit.',
+        characteristics: [
+            'Nagpapalit-anyo: baby at maliit na halimaw.',
+            'Ang iyak ay pain para sa mga mabubuting loob.',
+            'May matatalas na kuko at pangil sa tunay na anyo.',
+            'Ayaw sa rosaryo at malalakas na ingay.'
+        ],
+        warning: 'Kung may narinig kang iyak ng sanggol sa gitna ng kawalan, don\'t be a hero. Huwag na huwag mong susundan. Minsan, ang pag-iingay ay sapat na para itaboy siya.'
+    },
+    {
+        id: 'aswang',
+        name: 'Aswang',
+        tagline: 'Ang Nagpapanggap na Kapanalig',
+        imageSrc: 'https://images.squarespace-cdn.com/content/v1/5c76a250a568275dfaf44efb/1551403271931-52JS78SXQPV6TCF1CIUT/Mananaggal.png',
+        description: 'Ang Aswang ang generic term sa mga kinatatakutang nilalang sa Pilipinas. Sa umaga, sila\'y mga normal na mamamayan—tahimik na kapitbahay, palangiting tindera. Ngunit pagdating ng gabi, nagbabago ang kanilang anyo. Nagiging aso, baboy-ramo, o malaking ibon para manginain ng laman-loob.',
+        characteristics: [
+            'Baliktad ang repleksyon sa kanilang mga mata.',
+            'Ang tunog ng "tiktik" o "wakwak" sa gabi ay senyales na malapit sila.',
+            'Paborito nila ang atay ng tao at mga sanggol sa sinapupunan.',
+            'Kadalasan, may buntot daw sila na nakatago sa ilalim ng kanilang dila.'
+        ],
+        warning: 'Mag-ingat sa mga probinsya, lalo na sa gabi. Ang langis na gawa sa niyog at dinasalan ay biglang kukulo kung may aswang sa paligid. Huwag basta-basta magtitiwala.'
+    },
+    {
+        id: 'tikbalang',
+        name: 'Tikbalang',
+        tagline: 'Ang Hari ng mga Ligaw na Landas',
+        imageSrc: 'https://godsandmonsters.info/wp-content/uploads/2023/07/Tikbalang.png',
+        description: 'Isang nilalang na may katawang tao ngunit may ulo at mga paa ng kabayo. Pinaglalaruan nito ang mga manlalakbay sa gubat, pinaikot-ikot hanggang sa mawala sila sa sarili. Akala mo tama ang daan mo, pero it\'s a trap. Pabalik-balik ka lang pala.',
+        characteristics: [
+            'Nakatira sa mga puno ng Balete, kawayanan, o malalaking puno.',
+            'Nagdudulot ng "pagkalito" o disorientation sa mga biktima.',
+            'Sinasabing umuulan kahit maaraw kapag may kinakasal na Tikbalang.',
+            'Maaari mong paamuin kung kaya mong bunutin ang gintong buhok sa kanyang kiling.'
+        ],
+        warning: 'Para makawala sa kanyang pagliligaw, magpaalam ka ng malakas: "Tabi-tabi po, makikiraan lang." O kaya\'y baliktarin ang iyong damit. Kung gusto mo siyang labanan, good luck na lang sa\'yo.'
+    },
+    {
+        id: 'duwende',
+        name: 'Duwende',
+        tagline: 'Ang mga Nuno sa Punso',
+        imageSrc: 'https://cdna.artstation.com/p/assets/images/images/004/025/826/large/clarita-joy-cailan-clarita-cailan-nuno2rgb.jpg?1479593351',
+        description: 'Maliit na nilalang, parang matandang unano, na nakatira sa ilalim ng lupa, lalo na sa mga punso. May dalawang klase sila: ang Duwendeng Puti na palakaibigan, at ang Duwendeng Itim na delikado at mapanakit. They demand respect sa kanilang teritoryo.',
+        characteristics: [
+            'Nakatira sa mga punso, malalaking bato, o sa mga luma at madilim na bahagi ng bahay.',
+            'Kayang magbigay ng swerte (Puti) o kamalasan at sakit (Itim).',
+            'Nagagalit kapag sinisira o dinudumihan ang kanilang tirahan.',
+            'Hindi sila nakikita ng lahat; pinipili lang nila kung kanino magpapakita.'
+        ],
+        warning: 'Laging magsabi ng "Tabi-tabi po" kapag dadaan sa mga punso o sa mga lugar na feeling mo ay may something. Huwag na huwag mong sisipain o iihihan ang punso. It will cost you dearly.'
+    },
+    {
+        id: 'white_lady',
+        name: 'White Lady',
+        tagline: 'Ang Kaluluwang Hindi Matahimik',
+        imageSrc: 'https://clipart-library.com/img/1667595.png',
+        description: 'Kaluluwa ng isang babaeng namatay sa isang marahas na paraan. Madalas siyang nagpapakita sa mga madidilim at tahimik na kalsada, lalo na sa Balete Drive. Naghahanap siya ng katarungan, o di kaya\'y naghahanap lang ng isasama niya sa kabilang buhay.',
+        characteristics: [
+            'Nakasuot ng puting bestida, madalas may mantsa ng dugo.',
+            'Mahaba at itim ang buhok na tumatakip sa mukha.',
+            'Bigla na lang lilitaw sa backseat ng iyong sasakyan.',
+            'Ang presensya niya ay nagdudulot ng matinding lamig at takot.'
+        ],
+        warning: 'Kapag nagmamaneho mag-isa sa gabi, avoid looking at your rearview mirror for too long. Kung may naramdaman kang kakaiba, huwag kang lilingon sa likod. Magdasal ka na lang at bilisan ang takbo.'
+    },
+    {
+        id: 'pugot_ulo',
+        name: 'Pugot Ulo',
+        tagline: 'Ang Pari na Walang Kapatawaran',
+        imageSrc: 'https://orig08.deviantart.net/e7f1/f/2009/050/3/e/pugot_by_isaiahpaul.jpg',
+        description: 'Multo ng isang paring pinugutan ng ulo noong panahon ng mga Kastila. Hanggang ngayon, bitbit pa rin niya ang sarili niyang ulo habang naglalakad sa mga lumang simbahan, kumbento, o sa lugar kung saan siya pinatay. He\'s forever searching for his missing head.',
+        characteristics: [
+            'Laging nakasuot ng abito ng pari.',
+            'Bitbit ang sariling ulo, o di kaya\'y naglalakad na walang ulo.',
+            'Nagpaparamdam sa pamamagitan ng tunog ng mga kadenang hinihila.',
+            'Madalas makita sa mga lumang gusali na may kinalaman sa simbahan.'
+        ],
+        warning: 'Kung ikaw ay nasa isang lumang simbahan sa gabi at may narinig kang kalampag, umalis ka na. Hindi mo gugustuhing makita kung paano niya hinahanap ang kanyang ulo.'
+    },
+    {
+        id: 'sirena_at_siyokoy',
+        name: 'Sirena at Siyokoy',
+        tagline: 'Ang mga Taga-Bantay ng Karagatan',
+        imageSrc: 'https://64.media.tumblr.com/53ef271469881f9b41a4b163d3e31a59/tumblr_o75vkaiWWI1v9qvuco1_1280.jpg',
+        description: 'Ang Sirena ay isang nilalang na may katawan ng babae at buntot ng isda, kilala sa kanyang kagandahan at tinig na nakakaakit. Ang Siyokoy naman ang kanyang male counterpart—pangit, may kaliskis, at mas agresibo. Sila ang mga enforcer ng dagat.',
+        characteristics: [
+            'Dinadala ang mga mangingisda o manlalangoy sa kanilang kaharian sa ilalim ng dagat.',
+            'Ang Sirena ay umaakit gamit ang kanta; ang Siyokoy ay gumagamit ng dahas.',
+            'Nagagalit sa mga nagpaparumi at umaabuso sa karagatan.',
+            'Ang kanilang mga alagang isda ay nagsisilbing mga espiya.'
+        ],
+        warning: 'Respetuhin mo ang dagat. Huwag magtapon ng basura at huwag mag-ingay nang sobra. Kung may narinig kang magandang kanta sa gitna ng laot, it\'s not a good sign. Takpan mo ang iyong tenga at umalis agad.'
+    },
+    {
+        id: 'berbalang',
+        name: 'Berbalang',
+        tagline: 'Ang Kumakain ng Tao Mula sa Malayo',
+        imageSrc: 'https://images.squarespace-cdn.com/content/v1/5bd88db093a6320f071b1a50/d3450b49-4a98-4815-8283-dfd4fb7db266/5e_MTOF_Berbalang.png',
+        description: 'Isang uri ng aswang mula sa mga liblib na isla sa Mindanao. May kakayahan silang ihiwalay ang kanilang kaluluwa sa katawan. Ang kaluluwang ito ay lilipad at maghahanap ng biktima. Once they find a target, kinakain nila ang laman-loob nito spiritually, causing the victim to die a slow and mysterious death.',
+        characteristics: [
+            'Ang pisikal na katawan ay naiiwan na parang tulog habang nangangaso ang kaluluwa.',
+            'Kaya nilang makita ang anino ng isang tao kahit gaano kalayo.',
+            'Pagkatapos kumain, ang kanilang mga mata ay namumula at nagiging wild.',
+            'Sinasabing naglalaway sila sa amoy ng patay.'
+        ],
+        warning: 'Mahirap silang labanan dahil hindi mo alam kung sino sila. Ang mga lokal ay gumagamit ng matitingkad na kulay at salamin para lituhin ang kanilang paningin. Kung may namatay sa inyong lugar na walang dahilan, baka may Berbalang sa paligid.'
+    },
+    {
+        id: 'santelmo',
+        name: 'Santelmo',
+        tagline: 'Ang Lumulutang na Bola ng Apoy',
+        imageSrc: 'https://pbs.twimg.com/media/EVXhY3BU0AAbIGr?format=jpg&name=large',
+        description: 'Isang bola ng apoy, o "St. Elmo\'s Fire," na lumulutang sa mga bukid, latian, o sementeryo. Sinasabing ito ang kaluluwa ng mga taong namatay at hindi nabigyan ng maayos na libing. Hinahabol nito ang mga tao, at kung maabutan ka, you\'re toast.',
+        characteristics: [
+            'Nag-iiba-iba ang laki, mula sa kamao hanggang sa ulo ng tao.',
+            'Mas mabilis tumakbo kaysa sa tao.',
+            'Madalas makita pagkatapos ng malakas na ulan.',
+            'Kung hahatiin mo raw ito, dadami pa lalo.'
+        ],
+        warning: 'Huwag na huwag mong hahabulin o tititigan. Kung hinabol ka, tumakbo ka sa direksyon na may ilog o tubig. Sinasabing hindi sila makakatawid sa tubig. Don\'t even think about fighting it.'
+    },
+    {
+        id: 'balbal',
+        name: 'Bal-Bal',
+        tagline: 'Ang Magnanakaw ng mga Bangkay',
+        imageSrc: 'https://i.pinimg.com/736x/aa/85/4d/aa854d90d00f87812e3103035b31278c.jpg',
+        description: 'Isang uri ng aswang na ang paboritong pagkain ay mga bangkay. Sa gabi ng lamay, palihim nilang ninanakaw ang bangkay mula sa kabaong at pinapalitan ito ng katawan ng puno ng saging. The family will be mourning a banana trunk habang sila ay nagpipiyesta.',
+        characteristics: [
+            'May mahahabang kuko na parang kutsilyo para buksan ang kabaong.',
+            'Amoy-patay ang kanilang hininga.',
+            'May kakayahang i-hypnotize ang mga naglalamay para hindi mapansin ang kanilang ginagawa.',
+            'Gumagalaw nang walang ingay.'
+        ],
+        warning: 'Sa mga lamay sa probinsya, importanteng laging may gising na bantay. Ang pag-iingay, kantahan, at pagsusugal ay hindi lang para sa libangan, kundi para itaboy ang mga ganitong nilalang.'
+    },
+    {
+        id: 'batibat',
+        name: 'Batibat',
+        tagline: 'Ang Bangungot na Pumapatay',
+        imageSrc: 'https://phspirits.com/wp-content/uploads/2017/12/Batibat-2-1.jpg',
+        description: 'Isang malaki, mataba, at masamang espiritu na nakatira sa mga puno. Kapag pinutol ang puno para gawing haligi ng bahay, sumasama siya at doon na naninirahan. Sa gabi, kapag tulog ang may-ari ng bahay, uupo siya sa dibdib nito, causing suffocation and death. Ito ang mythological explanation para sa "bangungot" or sudden unexplained death during sleep.',
+        characteristics: [
+            'Malaki, mataba, at mukhang matandang babae.',
+            'Nakikita lamang sa panaginip bago ang atake.',
+            'Pinipili ang mga taong natutulog nang busog na busog.',
+            'Naninirahan sa mga lumang kahoy, lalo na sa mga haligi ng bahay.'
+        ],
+        warning: 'Iwasang matulog agad pagkatapos kumain nang marami. Kung sa panaginip mo ay may dambuhalang nakaupo sa dibdib mo, try to bite your thumb or wiggle your big toe. Ito raw ang paraan para magising at makatakas sa kanyang kapangyarihan.'
+    },
+    {
+        id: 'kumakatok',
+        name: 'Kumakatok',
+        tagline: 'Ang mga Hindi Inaasahang Bisita',
+        imageSrc: 'https://godsandmonsters.info/wp-content/uploads/2025/02/Kumakatok.webp',
+        description: 'Isang grupo ng tatlong nilalang na nakasuot ng balabal. Isang magandang dalaga at dalawang matandang lalaki. Kakatok sila sa iyong pinto sa kalaliman ng gabi. Huwag na huwag mong bubuksan. Sila ay mga tagapaghatid ng masamang balita. Pagkatapos ng kanilang pagbisita, may mamamatay na miyembro ng pamilya sa loob ng ilang araw.',
+        characteristics: [
+            'Laging tatlo—isang babae at dalawang lalaki.',
+            'Nakasuot ng itim o brown na balabal na may hood.',
+            'Ang kanilang pagkatok ay malumanay ngunit mapilit.',
+            'Hindi sila nagsasalita; titingnan ka lang nila nang diretso sa mata.'
+        ],
+        warning: 'Kung may kumatok sa gabi at hindi mo kilala, just ignore it. Huwag sumilip sa bintana. Kung sila ay pumasok, malamang na may darating na kamatayan sa pamilya. Ang tanging paraan para itaboy sila ay ang pagdasal at pag-iilaw ng kandila sa buong bahay. Huwag magpakita ng takot.'
+    }
+        ];
+
+        const gridContainer = document.getElementById('codex-grid');
+        const modal = document.getElementById('codex-modal');
+        const modalCloseBtn = document.getElementById('codex-modal-close-button');
+        const modalImage = document.getElementById('modal-codex-image');
+        const modalTitle = document.getElementById('modal-codex-title');
+        const modalDescription = document.getElementById('modal-codex-description');
+        const modalCharacteristics = document.getElementById('modal-codex-characteristics');
+        const modalWarning = document.getElementById('modal-codex-warning');
+
+        function displayCreatures() {
+            gridContainer.innerHTML = creatures.map(creature => `
+                <div class="codex-card" data-id="${creature.id}">
+                    <img src="${creature.imageSrc}" alt="${creature.name}" class="codex-card-img">
+                    <div class="codex-card-content">
+                        <h2 class="codex-card-title">${creature.name}</h2>
+                        <p class="codex-card-tagline">${creature.tagline}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function populateModal(creature) {
+            modalImage.src = creature.imageSrc;
+            modalImage.alt = creature.name;
+            modalTitle.textContent = creature.name;
+            modalDescription.innerHTML = `<p>${creature.description.replace(/\n/g, '</p><p>')}</p>`;
+            modalCharacteristics.innerHTML = creature.characteristics.map(item => `<li>${item}</li>`).join('');
+            modalWarning.textContent = creature.warning;
+        }
+
+        function openModal() {
+            modal.classList.remove('modal-hidden');
+            modal.classList.add('modal-visible');
+        }
+
+        function closeModal() {
+            modal.classList.add('modal-hidden');
+            modal.classList.remove('modal-visible');
+        }
+        
+        gridContainer.addEventListener('click', (e) => {
+            const card = e.target.closest('.codex-card');
+            if (!card) return;
+
+            const creatureId = card.dataset.id;
+            const creatureData = creatures.find(c => c.id === creatureId);
+
+            if (creatureData) {
+                populateModal(creatureData);
+                openModal();
+            }
+        });
+
+        modalCloseBtn.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('modal-visible')) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('currentYearMap').textContent = new Date().getFullYear();
+        const navToggle = document.querySelector('.nav-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', () => {
+                const isExpanded = navToggle.getAttribute('aria-expanded') === 'true' || false;
+                navToggle.setAttribute('aria-expanded', !isExpanded);
+                navMenu.classList.toggle('active');
+            });
+        }
+        
+        displayCreatures();
+    </script>
+</body>
+</html>
